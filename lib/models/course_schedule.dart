@@ -62,12 +62,5 @@ class Exam extends Deadline {
   Exam(): super();
 }
 
-Program program = Program.empty();
-List<Deadline> deadlines = [
-  Deadline(course: Course(acronym: "CENG331"), endTime: DateTime.utc(2019, 12, 4, 23, 59), description: "Attack lab is over" ),
-  Deadline(course: Course(acronym: "PSY100"), endTime: DateTime.utc(2019, 11, 23, 23, 59), description: "PSY some reading some writing bla blaawdawd awdawdawcwadcawdc" ),
-   Deadline(course: Course(acronym: "CENG331"), endTime: DateTime.utc(2019, 12, 4, 23, 59), description: "Attack lab is over" ),
-  Deadline(course: Course(acronym: "PSY100"), endTime: DateTime.utc(2019, 11, 23, 23, 59), description: "PSY some reading some writing bla blaawdawd awdawdawcwadcawdc" ),
-   Deadline(course: Course(acronym: "CENG331"), endTime: DateTime.utc(2019, 12, 4, 23, 59), description: "Attack lab is over" ),
-  Deadline(course: Course(acronym: "PSY100"), endTime: DateTime.utc(2019, 11, 23, 23, 59), description: "PSY some reading some writing bla blaawdawd awdawdawcwadcawdc" ),
-];
+//Program program = Program.empty();
+

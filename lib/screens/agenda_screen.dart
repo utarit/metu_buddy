@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:metu_helper/models/course_schedule.dart';
+import 'package:metu_helper/screens/course_edit_screen.dart';
+import 'package:metu_helper/screens/deadline_edit_screen.dart';
 
 class AgendaScreen extends StatefulWidget {
   @override
@@ -7,9 +9,12 @@ class AgendaScreen extends StatefulWidget {
 }
 
 class _AgendaScreenState extends State<AgendaScreen> {
-  List<TableRow> table;
+  Program program;
+  List<Deadline> deadlines = [
+  Deadline(course: Course(acronym: "PSY100"), endTime: DateTime.utc(2019, 11, 23, 23, 59), description: "PSY some reading some writing bla blaawdawd awdawdawcwadcawdc" ),
+];
 
-  void generateTable() {
+  List<TableRow> generateTable() {
     List<TableRow> programList = [
       TableRow(
         decoration: BoxDecoration(
@@ -36,12 +41,6 @@ class _AgendaScreenState extends State<AgendaScreen> {
       )
     ];
 
-    program.addCourse(Course(acronym: "CENG400"), 0, 0);
-    program.addCourse(Course(acronym: "CENG400"), 0, 1);
-    program.addCourse(Course(acronym: "CENG350"), 1, 0);
-    program.addCourse(Course(acronym: "CENG350"), 1, 1);
-    program.addCourse(Course(acronym: "PSY100"), 2, 3);
-    program.addCourse(Course(acronym: "PSY100"), 2, 4);
     for (int hour = 0; hour < 9; hour++) {
       TableRow row = TableRow(
           decoration: BoxDecoration(
@@ -74,15 +73,53 @@ class _AgendaScreenState extends State<AgendaScreen> {
       }
       programList.add(row);
     }
-    setState(() {
-      table = programList;
-    });
+    return programList;
   }
 
   @override
   void initState() {
     super.initState();
+    program = Program.empty();
+    // setState(() {
+    //   program.addCourse(Course(acronym: "CENG400"), 0, 0);
+    //   program.addCourse(Course(acronym: "CENG400"), 0, 1);
+    //   program.addCourse(Course(acronym: "CENG350"), 1, 0);
+    //   program.addCourse(Course(acronym: "CENG350"), 1, 1);
+    //   program.addCourse(Course(acronym: "PSY100"), 2, 3);
+    //   program.addCourse(Course(acronym: "PSY100"), 2, 4);
+    // });
+
+    //draw from local data and make the write to table
     generateTable();
+  }
+
+  _navigateEditScreen(BuildContext context) async {
+    // Navigator.push returns a Future that completes after calling
+    // Navigator.pop on the Selection Screen.
+    final result = await Navigator.push(
+      context,
+      // Create the SelectionScreen in the next step.
+      MaterialPageRoute(builder: (context) => CourseEditScreen()),
+    );
+
+    Scaffold.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text("$result")));
+  }
+  _navigateDeadlineEditScreen(BuildContext context) async {
+    // Navigator.push returns a Future that completes after calling
+    // Navigator.pop on the Selection Screen.
+    final result = await Navigator.push(
+      context,
+      // Create the SelectionScreen in the next step.
+      MaterialPageRoute(builder: (context) => DeadlineEditScreen()),
+    );
+
+    if(result != null){
+      setState(() {
+        deadlines.add(Deadline(course: Course(acronym:  result["course"]), description: result["description"], endTime: result["deadline"]));
+      });
+    }
   }
 
   @override
@@ -96,7 +133,7 @@ class _AgendaScreenState extends State<AgendaScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                "Dersleriniz",
+                "Schedule",
                 style: TextStyle(
                     fontFamily: "Galano",
                     fontSize: 30,
@@ -104,7 +141,9 @@ class _AgendaScreenState extends State<AgendaScreen> {
               ),
               IconButton(
                 icon: Icon(Icons.settings),
-                onPressed: () => null,
+                onPressed: () {
+                  _navigateEditScreen(context);
+                },
               )
             ],
           ),
@@ -113,15 +152,26 @@ class _AgendaScreenState extends State<AgendaScreen> {
             columnWidths: {0: FlexColumnWidth(0.7)},
             //defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             // border: TableBorder.all(),
-            children: table),
+            children: generateTable()),
         Padding(
           padding: EdgeInsets.only(top: 8, left: 8),
-          child: Text(
-            "Deadlines",
-            style: TextStyle(
-                fontFamily: "Galano",
-                fontSize: 23,
-                fontWeight: FontWeight.bold),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                "Deadlines",
+                style: TextStyle(
+                    fontFamily: "Galano",
+                    fontSize: 23,
+                    fontWeight: FontWeight.bold),
+              ),
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  _navigateDeadlineEditScreen(context);
+                },
+              )
+            ],
           ),
         ),
         Expanded(
@@ -142,7 +192,7 @@ class _AgendaScreenState extends State<AgendaScreen> {
               );
             },
           ),
-        )
+        ),
       ],
     );
   }
