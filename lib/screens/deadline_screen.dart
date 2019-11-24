@@ -90,6 +90,9 @@ class _DeadlineScreenState extends State<DeadlineScreen> {
         final deadline = deadlinesBox.getAt(index) as Deadline;
         var t = deadline.endTime;
         return Dismissible(
+          onDismissed: (DismissDirection direction){
+            deadlinesBox.deleteAt(index);
+          },
           background: Container(
             color: Colors.red,
           ),
