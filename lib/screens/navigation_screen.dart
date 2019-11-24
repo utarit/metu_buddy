@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:metu_helper/screens/agenda_screen.dart';
 import 'package:metu_helper/screens/deadline_screen.dart';
 import 'package:metu_helper/screens/home_screen.dart';
@@ -16,6 +17,12 @@ class _NavigationScreenState extends State<NavigationScreen> {
     HomeScreen(),
     DeadlineScreen(),
   ];
+
+  @override
+  void dispose() {
+    Hive.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,3 +48,4 @@ class _NavigationScreenState extends State<NavigationScreen> {
     );
   }
 }
+

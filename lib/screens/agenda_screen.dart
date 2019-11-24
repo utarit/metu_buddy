@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:metu_helper/models/course_schedule.dart';
+import 'package:hive/hive.dart';
+import 'package:metu_helper/models/course.dart';
 import 'package:metu_helper/models/deadline.dart';
+import 'package:metu_helper/models/program.dart';
 import 'package:metu_helper/screens/course_edit_screen.dart';
 import 'package:metu_helper/utils/common_functions.dart';
 
@@ -11,10 +13,10 @@ class AgendaScreen extends StatefulWidget {
 
 class _AgendaScreenState extends State<AgendaScreen> {
   Program program;
-  List<Course> courseList;
+  //List<Course> courseList;
   List<Deadline> deadlines = [];
 
-  List<TableRow> generateTable() {
+  List<TableRow> generateTable(Box<dynamic> courses) {
     List<TableRow> programList = [
       TableRow(
         decoration: BoxDecoration(
@@ -55,20 +57,21 @@ class _AgendaScreenState extends State<AgendaScreen> {
             )
           ]);
 
+      for (int i = 0; i < courses.length; i++) {
+        final course = courses.getAt(i) as Course;
+        program.addCourse(course);
+      }
+
       for (int i = 0; i < program.data[hour].length; i++) {
         Course f = program.data[hour][i];
         if (f != null) {
           row.children.add(Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.all(4.0),
-            // decoration: BoxDecoration(color: DateTime.now().weekday == i ? Colors.yellow : Colors.white),
             child: Text(f.acronym, style: TextStyle(fontSize: 12)),
           ));
         } else {
-          row.children.add(Container(
-              // padding: const EdgeInsets.all(4.0),
-              // child: Text(""),
-              ));
+          row.children.add(Container());
         }
       }
       programList.add(row);
@@ -80,8 +83,8 @@ class _AgendaScreenState extends State<AgendaScreen> {
   void initState() {
     super.initState();
     program = Program.empty();
-    courseList = List<Course>();
-    generateTable();
+    // courseList = List<Course>();
+    //generateTable();
   }
 
   _navigateEditScreen(BuildContext context) async {
@@ -94,67 +97,81 @@ class _AgendaScreenState extends State<AgendaScreen> {
     );
 
     if (result != null) {
-      for (CourseTime time in result.hours) {
-        if (program.data[time.hour][time.day - 1] == null) {
-          program.addCourse(result, time.day, time.hour);
-        }
-      }
-      setState(() {
-        courseList.add(result);
-      });
+      Hive.box("courses").add(result);
+      // setState(() {
+      //   courseList.add(result);
+      //   program.addCourse(result);
+      // });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(top: 32, bottom: 16, left: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                "Schedule",
-                style: TextStyle(
-                    fontFamily: "Galano",
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold),
-              ),
-              IconButton(
-                icon: Icon(Icons.settings),
-                onPressed: () {
-                  _navigateEditScreen(context);
-                },
-              )
-            ],
-          ),
-        ),
-        Table(
-            columnWidths: {0: FlexColumnWidth(0.7)},
-            //defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            // border: TableBorder.all(),
-            children: generateTable()),
-        Text("Course List"),
-        Expanded(
-          child: ListView.builder(
-            itemCount: courseList.length,
-            itemBuilder: (BuildContext context, int index) {
-              Duration duration = DateTime.now().difference(schoolStarted);
-              int ind = (duration.inDays ~/ 7);
-              return ListTile(
-                // onTap: (){
-                //   CourseEditScreen(courseList[index]);
-                // },
-                title: Text(courseList[index].acronym),
-                subtitle:
-                    Text("Week ${ind + 1}: ${courseList[index].syllabus[ind]}"),
-              );
-            },
-          ),
-        )
-      ],
+    return FutureBuilder(
+        future: Hive.openBox("courses"),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done &&
+              !snapshot.hasError) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(top: 32, bottom: 4, left: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        "Schedule",
+                        style: TextStyle(
+                            fontFamily: "Galano",
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.add, size: 30,),
+                        onPressed: () {
+                          _navigateEditScreen(context);
+                        },
+                      )
+                    ],
+                  ),
+                ),
+                Table(
+                    columnWidths: {0: FlexColumnWidth(0.7)},
+                    //defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    // border: TableBorder.all(),
+                    children: generateTable(Hive.box("courses"))),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0, top: 8.0),
+                  child: Text("Course List", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                ),
+                Expanded(
+                  child: buildListView(),
+                )
+              ],
+            );
+          }
+          return Container();
+        });
+  }
+
+  ListView buildListView() {
+    final coursesBox = Hive.box("courses");
+
+    return ListView.builder(
+      itemCount: coursesBox.length,
+      itemBuilder: (BuildContext context, int index) {
+        final course = coursesBox.getAt(index) as Course;
+        Duration duration = DateTime.now().difference(schoolStarted);
+        int ind = (duration.inDays ~/ 7);
+        return ListTile(
+          // onTap: (){
+          //   CourseEditScreen(courseList[index]);
+          // },
+          title: Text(course.acronym),
+          subtitle: Text("Week ${ind + 1}: ${course.syllabus[ind]}"),
+        );
+      },
     );
   }
 }

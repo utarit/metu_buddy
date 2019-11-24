@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:metu_helper/models/course_schedule.dart';
+import 'package:metu_helper/models/course.dart';
 
 class CourseEditScreen extends StatefulWidget {
   @override
