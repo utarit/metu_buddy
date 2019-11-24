@@ -10,7 +10,7 @@ class Program {
   }
 
   void addCourse(Course course, int day, int hour){
-    data[hour][day] = course;
+    data[hour][day-1] = course;
   }
 
   void printTable(){
@@ -19,24 +19,14 @@ class Program {
     }
   }
 }
-class WorkDay {
-  int day;
-  List<Course> courses;
-
-  WorkDay(this.day){
-    courses = [null,null,null,null,null,null,null,null,null,null];
-  }
-
-  WorkDay.fromCourse(this.day, this.courses);
-}
 
 class Course {
   String acronym;
   String fullName;
   List<CourseTime> hours;
-  List<Deadline> homeworks;
+  List<String> syllabus;
 
-  Course({this.acronym, this.fullName});
+  Course({this.acronym, this.fullName, this.hours, this.syllabus});
 }
 
 class CourseTime {
@@ -46,21 +36,6 @@ class CourseTime {
   CourseTime({this.day, this.hour});
 }
 
-class Deadline {
-  Course course;
-  DateTime endTime;
-  String description;
 
-  Deadline({this.course, this.endTime, this.description});
-}
 
-class Homework extends Deadline {
-  Homework(): super();
-}
-
-class Exam extends Deadline {
-  Exam(): super();
-}
-
-//Program program = Program.empty();
 

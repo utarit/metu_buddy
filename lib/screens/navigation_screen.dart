@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:metu_helper/screens/agenda_screen.dart';
+import 'package:metu_helper/screens/deadline_screen.dart';
 import 'package:metu_helper/screens/home_screen.dart';
 
 class NavigationScreen extends StatefulWidget {
@@ -13,7 +14,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   final screenList = [
     AgendaScreen(),
     HomeScreen(),
-    Center(child: Text("Profile")),
+    DeadlineScreen(),
   ];
 
   @override
@@ -34,7 +35,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
           BottomNavigationBarItem(
               icon: Icon(Icons.dashboard), title: Text("Dashboard")),
           BottomNavigationBarItem(
-              icon: Icon(Icons.person), title: Text("Profile")),
+              icon: Icon(Icons.date_range), title: Text("Deadlines")),
         ],
       ),
     );

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:metu_helper/models/course_schedule.dart';
+import 'package:metu_helper/models/deadline.dart';
 import 'package:metu_helper/screens/course_edit_screen.dart';
-import 'package:metu_helper/screens/deadline_edit_screen.dart';
+import 'package:metu_helper/utils/common_functions.dart';
 
 class AgendaScreen extends StatefulWidget {
   @override
@@ -10,9 +11,8 @@ class AgendaScreen extends StatefulWidget {
 
 class _AgendaScreenState extends State<AgendaScreen> {
   Program program;
-  List<Deadline> deadlines = [
-  Deadline(course: Course(acronym: "PSY100"), endTime: DateTime.utc(2019, 11, 23, 23, 59), description: "PSY some reading some writing bla blaawdawd awdawdawcwadcawdc" ),
-];
+  List<Course> courseList;
+  List<Deadline> deadlines = [];
 
   List<TableRow> generateTable() {
     List<TableRow> programList = [
@@ -80,16 +80,7 @@ class _AgendaScreenState extends State<AgendaScreen> {
   void initState() {
     super.initState();
     program = Program.empty();
-    // setState(() {
-    //   program.addCourse(Course(acronym: "CENG400"), 0, 0);
-    //   program.addCourse(Course(acronym: "CENG400"), 0, 1);
-    //   program.addCourse(Course(acronym: "CENG350"), 1, 0);
-    //   program.addCourse(Course(acronym: "CENG350"), 1, 1);
-    //   program.addCourse(Course(acronym: "PSY100"), 2, 3);
-    //   program.addCourse(Course(acronym: "PSY100"), 2, 4);
-    // });
-
-    //draw from local data and make the write to table
+    courseList = List<Course>();
     generateTable();
   }
 
@@ -102,22 +93,14 @@ class _AgendaScreenState extends State<AgendaScreen> {
       MaterialPageRoute(builder: (context) => CourseEditScreen()),
     );
 
-    Scaffold.of(context)
-      ..removeCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text("$result")));
-  }
-  _navigateDeadlineEditScreen(BuildContext context) async {
-    // Navigator.push returns a Future that completes after calling
-    // Navigator.pop on the Selection Screen.
-    final result = await Navigator.push(
-      context,
-      // Create the SelectionScreen in the next step.
-      MaterialPageRoute(builder: (context) => DeadlineEditScreen()),
-    );
-
-    if(result != null){
+    if (result != null) {
+      for (CourseTime time in result.hours) {
+        if (program.data[time.hour][time.day - 1] == null) {
+          program.addCourse(result, time.day, time.hour);
+        }
+      }
       setState(() {
-        deadlines.add(Deadline(course: Course(acronym:  result["course"]), description: result["description"], endTime: result["deadline"]));
+        courseList.add(result);
       });
     }
   }
@@ -153,46 +136,24 @@ class _AgendaScreenState extends State<AgendaScreen> {
             //defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             // border: TableBorder.all(),
             children: generateTable()),
-        Padding(
-          padding: EdgeInsets.only(top: 8, left: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                "Deadlines",
-                style: TextStyle(
-                    fontFamily: "Galano",
-                    fontSize: 23,
-                    fontWeight: FontWeight.bold),
-              ),
-              IconButton(
-                icon: Icon(Icons.add),
-                onPressed: () {
-                  _navigateDeadlineEditScreen(context);
-                },
-              )
-            ],
-          ),
-        ),
+        Text("Course List"),
         Expanded(
           child: ListView.builder(
-            itemCount: deadlines.length,
-            itemBuilder: (context, index) {
-              var t = deadlines[index].endTime;
-              return Dismissible(
-                background: Container(
-                  color: Colors.red,
-                ),
-                key: UniqueKey(),
-                child: ListTile(
-                  title: Text(deadlines[index].course.acronym),
-                  subtitle: Text(deadlines[index].description),
-                  trailing: Text("${t.day}/${t.month} ${t.hour}:${t.minute}"),
-                ),
+            itemCount: courseList.length,
+            itemBuilder: (BuildContext context, int index) {
+              Duration duration = DateTime.now().difference(schoolStarted);
+              int ind = (duration.inDays ~/ 7);
+              return ListTile(
+                // onTap: (){
+                //   CourseEditScreen(courseList[index]);
+                // },
+                title: Text(courseList[index].acronym),
+                subtitle:
+                    Text("Week ${ind + 1}: ${courseList[index].syllabus[ind]}"),
               );
             },
           ),
-        ),
+        )
       ],
     );
   }
