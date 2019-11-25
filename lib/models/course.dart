@@ -25,4 +25,8 @@ class CourseTime {
   int day;
 
   CourseTime({this.day, this.hour});
+  @override
+  String toString() {
+    return "Day: $day / Hour: $hour";
+  }
 }

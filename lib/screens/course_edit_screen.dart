@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:metu_helper/models/course.dart';
+import 'package:metu_helper/utils/common_functions.dart';
 
 class CourseEditScreen extends StatefulWidget {
   @override
@@ -15,67 +16,6 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
   int _tmpHour;
   int _tmpDay;
 
-  List<GroupModel> _days = [
-    GroupModel(
-      text: "Monday",
-      index: 1,
-    ),
-    GroupModel(
-      text: "Tuesday",
-      index: 2,
-    ),
-    GroupModel(
-      text: "Wednesday",
-      index: 3,
-    ),
-    GroupModel(
-      text: "Thursday",
-      index: 4,
-    ),
-    GroupModel(
-      text: "Friday",
-      index: 5,
-    ),
-  ];
-
-  List<GroupModel> _hours = [
-    GroupModel(
-      text: "8.40",
-      index: 0,
-    ),
-    GroupModel(
-      text: "9.40",
-      index: 1,
-    ),
-    GroupModel(
-      text: "10.40",
-      index: 2,
-    ),
-    GroupModel(
-      text: "11.40",
-      index: 3,
-    ),
-    GroupModel(
-      text: "12.40",
-      index: 4,
-    ),
-    GroupModel(
-      text: "13.40",
-      index: 5,
-    ),
-    GroupModel(
-      text: "14.40",
-      index: 6,
-    ),
-    GroupModel(
-      text: "15.40",
-      index: 7,
-    ),
-    GroupModel(
-      text: "16.40",
-      index: 8,
-    ),
-  ];
 
   _showBottomSheet(context) {
     showModalBottomSheet(
@@ -103,7 +43,7 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold))
                               ] +
-                              _days
+                              days
                                   .map((t) => RadioListTile<int>(
                                         title: Text("${t.text}"),
                                         groupValue: _tmpDay,
@@ -128,7 +68,7 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold))
                               ] +
-                              _hours
+                              hours
                                   .map((t) => RadioListTile<int>(
                                         title: Text("${t.text}"),
                                         groupValue: _tmpHour,
@@ -239,7 +179,7 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
                                               fontWeight: FontWeight.bold)),
                                       TextSpan(
                                           text:
-                                              "${_days[lessonHours[index].day - 1].text} ${_hours[lessonHours[index].hour].text}"),
+                                              "${days[lessonHours[index].day - 1].text} ${hours[lessonHours[index].hour].text}"),
                                     ]),
                               ),
                               IconButton(
@@ -308,8 +248,4 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
   }
 }
 
-class GroupModel {
-  String text;
-  int index;
-  GroupModel({this.text, this.index});
-}
+

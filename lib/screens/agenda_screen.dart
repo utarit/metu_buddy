@@ -4,6 +4,7 @@ import 'package:metu_helper/models/course.dart';
 import 'package:metu_helper/models/deadline.dart';
 import 'package:metu_helper/models/program.dart';
 import 'package:metu_helper/screens/course_edit_screen.dart';
+import 'package:metu_helper/screens/course_screen.dart';
 import 'package:metu_helper/utils/common_functions.dart';
 
 class AgendaScreen extends StatefulWidget {
@@ -57,6 +58,7 @@ class _AgendaScreenState extends State<AgendaScreen> {
             )
           ]);
 
+      program = Program.empty();
       for (int i = 0; i < courses.length; i++) {
         final course = courses.getAt(i) as Course;
         program.addCourse(course);
@@ -128,7 +130,10 @@ class _AgendaScreenState extends State<AgendaScreen> {
                             fontWeight: FontWeight.bold),
                       ),
                       IconButton(
-                        icon: Icon(Icons.add, size: 30,),
+                        icon: Icon(
+                          Icons.add,
+                          size: 30,
+                        ),
                         onPressed: () {
                           _navigateEditScreen(context);
                         },
@@ -143,7 +148,9 @@ class _AgendaScreenState extends State<AgendaScreen> {
                     children: generateTable(Hive.box("courses"))),
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0, top: 8.0),
-                  child: Text("Course List", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  child: Text("Course List",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 ),
                 Expanded(
                   child: buildListView(),
@@ -165,10 +172,24 @@ class _AgendaScreenState extends State<AgendaScreen> {
         Duration duration = DateTime.now().difference(schoolStarted);
         int ind = (duration.inDays ~/ 7);
         return ListTile(
-          // onTap: (){
-          //   CourseEditScreen(courseList[index]);
-          // },
-          title: Text(course.acronym),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => CourseScreen(
+                        course: course,
+                      )),
+            );
+          },
+          title: RichText(
+            text: TextSpan(style: TextStyle(color: Colors.black), children: [
+              TextSpan(
+                  text: course.acronym,
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              TextSpan(text: " - "),
+              TextSpan(text: course.fullName)
+            ]),
+          ),
           subtitle: Text("Week ${ind + 1}: ${course.syllabus[ind]}"),
         );
       },
