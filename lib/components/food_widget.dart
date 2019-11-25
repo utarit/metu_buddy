@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:metu_helper/models/food.dart';
+import 'package:metu_buddy/models/food.dart';
 
 class FoodWidget extends StatefulWidget {
 

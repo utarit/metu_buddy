@@ -1,4 +1,4 @@
-package com.example.metu_helper
+package com.example.metu_buddy
 
 import android.os.Bundle
 

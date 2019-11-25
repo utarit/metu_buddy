@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:metu_helper/models/course.dart';
-import 'package:metu_helper/models/deadline.dart';
-import 'package:metu_helper/models/program.dart';
-import 'package:metu_helper/screens/course_edit_screen.dart';
-import 'package:metu_helper/screens/course_screen.dart';
-import 'package:metu_helper/utils/common_functions.dart';
+import 'package:metu_buddy/models/course.dart';
+import 'package:metu_buddy/models/deadline.dart';
+import 'package:metu_buddy/models/program.dart';
+import 'package:metu_buddy/screens/course_edit_screen.dart';
+import 'package:metu_buddy/screens/course_screen.dart';
+import 'package:metu_buddy/utils/common_functions.dart';
 
 class AgendaScreen extends StatefulWidget {
   @override
@@ -118,12 +118,13 @@ class _AgendaScreenState extends State<AgendaScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.only(top: 32, bottom: 4, left: 8),
+                  padding:
+                      const EdgeInsets.only(left: 10, right: 10, top: 45.0, bottom: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        "Schedule",
+                        "Agenda",
                         style: TextStyle(
                             fontFamily: "Galano",
                             fontSize: 30,
@@ -147,10 +148,10 @@ class _AgendaScreenState extends State<AgendaScreen> {
                     // border: TableBorder.all(),
                     children: generateTable(Hive.box("courses"))),
                 Padding(
-                  padding: const EdgeInsets.only(left: 8.0, top: 8.0),
+                  padding: const EdgeInsets.only(left: 8.0, top: 12.0),
                   child: Text("Course List",
                       style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                 ),
                 Expanded(
                   child: buildListView(),

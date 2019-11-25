@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:metu_helper/models/course.dart';
-import 'package:metu_helper/utils/common_functions.dart';
+import 'package:metu_buddy/models/course.dart';
+import 'package:metu_buddy/utils/common_functions.dart';
 
 class CourseEditScreen extends StatefulWidget {
   @override
@@ -152,8 +152,8 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
                     validator: (value) {
                       if (value.isEmpty) {
                         return 'Please enter some text';
-                      } else if (value.length > 20) {
-                        return 'No more than 20 characters';
+                      } else if (value.length > 30) {
+                        return 'No more than 30 characters';
                       }
                       return null;
                     },

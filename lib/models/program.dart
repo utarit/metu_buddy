@@ -1,4 +1,4 @@
-import 'package:metu_helper/models/course.dart';
+import 'package:metu_buddy/models/course.dart';
 
 
 class Program {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:metu_helper/models/course.dart';
-import 'package:metu_helper/screens/navigation_screen.dart';
+import 'package:metu_buddy/models/course.dart';
+import 'package:metu_buddy/screens/navigation_screen.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
 import 'models/deadline.dart';
@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: "Roboto"
       ),

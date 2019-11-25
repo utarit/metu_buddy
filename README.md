@@ -1,4 +1,4 @@
-# metu_helper
+# metu_buddy
 
 A new Flutter project.
 

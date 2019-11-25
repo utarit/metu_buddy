@@ -45,14 +45,20 @@ class _PoolWidgetState extends State<PoolWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return nextSession == null
-        ? Text(
-            "Havuz şu an genel kullanıma açık değil :|",
-            style: TextStyle(color: Colors.white),
-          )
-        : Text(
-            "Sonraki Seans: ${formattedNum(nextSession.hour)}:${formattedNum(nextSession.minute)}",
-            style: TextStyle(color: Colors.white),
-          );
+    if (nextSession == null) {
+      return Text(
+        "Havuz şu an genel kullanıma açık değil :|",
+        style: TextStyle(color: Colors.white),
+      );
+    } else if (DateTime.now().weekday == DateTime.monday) {
+      return Text(
+        "Havuz pazartesi günleri kapalı :(",
+        style: TextStyle(color: Colors.white),
+      );
+    }
+    return Text(
+      "Sonraki Seans: ${formattedNum(nextSession.hour)}:${formattedNum(nextSession.minute)}",
+      style: TextStyle(color: Colors.white),
+    );
   }
 }

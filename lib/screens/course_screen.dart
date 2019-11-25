@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:metu_helper/models/course.dart';
-import 'package:metu_helper/models/deadline.dart';
-import 'package:metu_helper/utils/common_functions.dart';
+import 'package:metu_buddy/models/course.dart';
+import 'package:metu_buddy/models/deadline.dart';
+import 'package:metu_buddy/utils/common_functions.dart';
 
 class CourseScreen extends StatefulWidget {
   final Course course;

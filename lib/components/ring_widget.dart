@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:metu_helper/models/ring.dart';
+import 'package:metu_buddy/models/ring.dart';
 
 class RingWidget extends StatefulWidget {
   @override

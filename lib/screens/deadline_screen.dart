@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:metu_helper/models/course.dart';
-import 'package:metu_helper/models/deadline.dart';
-import 'package:metu_helper/screens/deadline_edit_screen.dart';
-import 'package:metu_helper/utils/common_functions.dart';
+import 'package:metu_buddy/models/deadline.dart';
+import 'package:metu_buddy/screens/deadline_edit_screen.dart';
+import 'package:metu_buddy/utils/common_functions.dart';
 
 class DeadlineScreen extends StatefulWidget {
   @override
@@ -28,7 +27,7 @@ class _DeadlineScreenState extends State<DeadlineScreen> {
 
     if (result != null) {
       Deadline deadline = Deadline(
-          course: Course(acronym: result["course"]),
+          course: result["course"],
           description: result["description"],
           endTime: result["deadline"]);
       Hive.box("deadlines").add(deadline);
@@ -39,7 +38,6 @@ class _DeadlineScreenState extends State<DeadlineScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -48,6 +46,7 @@ class _DeadlineScreenState extends State<DeadlineScreen> {
           if (snapshot.connectionState == ConnectionState.done &&
               !snapshot.hasError) {
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
                   padding:
@@ -71,6 +70,11 @@ class _DeadlineScreenState extends State<DeadlineScreen> {
                     ],
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text("You can swipe to delete",
+                      style: TextStyle(color: Colors.black38)),
+                ),
                 Expanded(
                   child: buildListView(),
                 )
@@ -90,7 +94,7 @@ class _DeadlineScreenState extends State<DeadlineScreen> {
         final deadline = deadlinesBox.getAt(index) as Deadline;
         var t = deadline.endTime;
         return Dismissible(
-          onDismissed: (DismissDirection direction){
+          onDismissed: (DismissDirection direction) {
             deadlinesBox.deleteAt(index);
           },
           background: Container(

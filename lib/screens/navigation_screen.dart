@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:metu_helper/screens/agenda_screen.dart';
-import 'package:metu_helper/screens/deadline_screen.dart';
-import 'package:metu_helper/screens/home_screen.dart';
+import 'package:metu_buddy/screens/agenda_screen.dart';
+import 'package:metu_buddy/screens/deadline_screen.dart';
+import 'package:metu_buddy/screens/home_screen.dart';
 
 class NavigationScreen extends StatefulWidget {
   @override

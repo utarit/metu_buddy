@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:metu_helper/models/course.dart';
+import 'package:metu_buddy/models/course.dart';
 
 part 'deadline.g.dart';
 

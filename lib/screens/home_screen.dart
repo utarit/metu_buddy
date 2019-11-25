@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:metu_helper/components/food_widget.dart';
-import 'package:metu_helper/components/pool_widget.dart';
-import 'package:metu_helper/components/ring_widget.dart';
+import 'package:metu_buddy/components/food_widget.dart';
+import 'package:metu_buddy/components/medico_widget.dart';
+import 'package:metu_buddy/components/pool_widget.dart';
+import 'package:metu_buddy/components/ring_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -19,21 +20,21 @@ class _HomeScreenState extends State<HomeScreen> {
     },
     {
       "name": "Ring",
-      "color": Colors.blue,
+      "color": Colors.blueAccent[700],
       "icon": Icons.directions_bus,
       "content": RingWidget()
     },
     {
       "name": "Havuz",
-      "color": Colors.lightBlue[200],
+      "color": Colors.lightBlue[400],
       "icon": Icons.pool,
       "content": PoolWidget()
     },
     {
-      "name": "Ring Hours",
-      "color": Colors.amber,
-      "icon": Icons.alarm,
-      "content": Text("This is Content")
+      "name": "Medico",
+      "color": Colors.green,
+      "icon": Icons.healing,
+      "content": MedicoWidget()
     },
   ];
 
@@ -53,10 +54,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     fontSize: 30,
                     fontWeight: FontWeight.bold),
               ),
-              IconButton(
-                icon: Icon(Icons.category),
-                onPressed: () => null,
-              )
+              // IconButton(
+              //   icon: Icon(Icons.category),
+              //   onPressed: () => null,
+              // )
             ],
           ),
         ),
