@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:metu_buddy/utils/common_functions.dart';
 
 class Ring {
   String name;
@@ -6,6 +7,47 @@ class Ring {
   final int day;
   List<TimeOfDay> schedule;
   List<String> stops;
+
+    static TimeOfDay closestRing(index, availableRings) {
+      DateTime timeNow = DateTime.now();
+    for (TimeOfDay ringTime in availableRings[index].schedule) {
+      if (totalMin(ringTime.hour, ringTime.minute) >=
+          totalMin(timeNow.hour, timeNow.minute)) {
+        return ringTime;
+      }
+    }
+
+    return null;
+  }
+
+    static List<ClosestRing> getRingHours() {
+    List<Ring> availableRings = [];
+    DateTime now = DateTime.now();
+    int day = (now.weekday > 5) ? WeekDay.weekend : WeekDay.weekday;
+    TimeOfDay timeNow = TimeOfDay.fromDateTime(now);
+    for (Ring ring in ringList) {
+      if (day == ring.day &&
+          totalMin(timeNow.hour, timeNow.minute) <
+              totalMin(ring.schedule.last.hour, ring.schedule.last.minute) &&
+          totalMin(timeNow.hour + 1, timeNow.minute) >=
+              totalMin(ring.schedule.first.hour, ring.schedule.first.minute)) {
+        //print(timeNow);
+        availableRings.add(ring);
+      }
+    }
+    List<ClosestRing> closestRings = [];
+    for(var ring in availableRings){
+      for (TimeOfDay ringTime in ring.schedule) {
+      if (totalMin(ringTime.hour, ringTime.minute) >=
+          totalMin(timeNow.hour, timeNow.minute)) {
+        closestRings.add(ClosestRing(ring: ring, time: ringTime));
+        break;
+      }
+    }
+    }
+
+    return closestRings;
+  }
 
   Ring.fromSchedule(
       this.name, this.stops, TimeOfDay startTime, TimeOfDay endTime, int step, this.day) {
@@ -48,6 +90,13 @@ class Ring {
 class WeekDay {
   static const int weekday = 0;
   static const int weekend = 1;
+}
+
+class ClosestRing {
+  Ring ring;
+  TimeOfDay time;
+
+  ClosestRing({this.ring, this.time});
 }
 
 List<Ring> ringList = [

@@ -13,7 +13,7 @@ class _DeadlineEditScreenState extends State<DeadlineEditScreen> {
   DateTime deadline;
   final descriptionController = TextEditingController();
   var coursesBox;
-  int _selectedCourseIndex = 0;
+  int _selectedCourseIndex;
 
   String fs(int n) => n < 9 ? "0$n" : "$n";
   String formattedDate(DateTime date) =>
@@ -32,26 +32,35 @@ class _DeadlineEditScreenState extends State<DeadlineEditScreen> {
       appBar: AppBar(
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.done, color: Colors.black, size: 30,),
+            icon: Icon(
+              Icons.done,
+              color: Colors.black,
+              size: 30,
+            ),
             onPressed: () {
               // Validate returns true if the form is valid, or false
               // otherwise.
               if (_formKey.currentState.validate()) {
-                final course = coursesBox
-                    .getAt(_selectedCourseIndex) as Course;
+                Course course;
+                if (_selectedCourseIndex != null) {
+                  course = coursesBox.getAt(_selectedCourseIndex) as Course;
+                }
                 Map<String, dynamic> data = {
-                  "course": course,
+                  "course": course == null
+                      ? Course(acronym: "OTHER")
+                      : course,
                   "description": descriptionController.text,
                   "deadline": deadline
                 };
-                Future.delayed(const Duration(milliseconds: 100),
-                    () {
+                Future.delayed(const Duration(milliseconds: 100), () {
                   Navigator.pop(context, data);
                 });
               }
             },
           ),
-          SizedBox(width: 4,)
+          SizedBox(
+            width: 4,
+          )
         ],
         centerTitle: true,
         leading: IconButton(

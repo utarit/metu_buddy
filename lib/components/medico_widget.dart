@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart'
-    as html; // Contains a client for making API calls
-import 'package:html/parser.dart'; // Contains HTML parsers to generate a Document object
-import 'package:html/dom.dart' as dom;
+
 
 const List<String> categories = [
   "PRATİSYEN HEKİM",
@@ -19,41 +16,24 @@ const List<String> categories = [
 ];
 
 class MedicoWidget extends StatefulWidget {
+  final data;
+  MedicoWidget({this.data});
+
   @override
   _MedicoWidgetState createState() => _MedicoWidgetState();
 }
 
 class _MedicoWidgetState extends State<MedicoWidget> {
-  List<Doctor> doctorList;
 
-  _getMedicoData() async {
-    var url = 'https://srm.metu.edu.tr/tr/doktor-listesi';
-    var response = await html.get(url);
-    var document = parse(response.body);
-    List<dom.Element> list = document.querySelectorAll('td');
-    List<Doctor> doctors = [];
-    int i = 0;
-    do {
-      Doctor doctor =
-          Doctor(name: list[i].text.trim(), status: list[i + 1].text.trim());
-      doctors.add(doctor);
-      i += 2;
-    } while (i < list.length);
-
-    setState(() {
-      doctorList = doctors;
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-    _getMedicoData();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (doctorList == null) {
+    if (widget.data == null) {
       return Center(
         child: CircularProgressIndicator(),
       );
@@ -61,9 +41,9 @@ class _MedicoWidgetState extends State<MedicoWidget> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: List.generate(
-          doctorList.length,
+          widget.data.length,
           (index) {
-            Doctor doctor = doctorList[index];
+            Doctor doctor = widget.data[index];
             return Container(
                 padding: EdgeInsets.symmetric(vertical: 4.0),
                 child: Column(
