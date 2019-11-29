@@ -17,17 +17,19 @@ class DeadlineAdapter extends TypeAdapter<Deadline> {
       course: fields[0] as Course,
       endTime: fields[1] as DateTime,
       description: fields[3] as String,
-    );
+    )..key = fields[2] as int;
   }
 
   @override
   void write(BinaryWriter writer, Deadline obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.course)
       ..writeByte(1)
       ..write(obj.endTime)
+      ..writeByte(2)
+      ..write(obj.key)
       ..writeByte(3)
       ..write(obj.description);
   }

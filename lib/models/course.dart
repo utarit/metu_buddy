@@ -1,4 +1,3 @@
-
 import 'package:hive/hive.dart';
 
 part 'course.g.dart';
@@ -13,6 +12,8 @@ class Course {
   List<CourseTime> hours;
   @HiveField(3)
   List<String> syllabus;
+  @HiveField(4)
+  int key;
 
   Course({this.acronym, this.fullName, this.hours, this.syllabus});
 }

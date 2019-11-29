@@ -9,8 +9,15 @@ class Deadline {
   Course course;
   @HiveField(1)
   DateTime endTime;
+  @HiveField(2)
+  int key;
   @HiveField(3)
   String description;
 
-  Deadline({this.course, this.endTime, this.description});
+  Deadline({this.course, this.endTime, this.key, this.description});
+  @override
+  String toString() {
+    // TODO: implement toString
+    return "$endTime $description";
+  }
 }

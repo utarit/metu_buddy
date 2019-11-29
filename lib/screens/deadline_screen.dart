@@ -10,41 +10,19 @@ class DeadlineScreen extends StatefulWidget {
 }
 
 class _DeadlineScreenState extends State<DeadlineScreen> {
-  // List<Deadline> deadlines = [
-  //   Deadline(
-  //       course: Course(acronym: "Hello"),
-  //       description: "You can swipe this to delete it",
-  //       endTime: DateTime.now())
-  // ];
-  _navigateDeadlineEditScreen(BuildContext context) async {
-    // Navigator.push returns a Future that completes after calling
-    // Navigator.pop on the Selection Screen.
-    final result = await Navigator.push(
-      context,
-      // Create the SelectionScreen in the next step.
-      MaterialPageRoute(builder: (context) => DeadlineEditScreen()),
-    );
-
-    if (result != null) {
-      Deadline deadline = Deadline(
-          course: result["course"],
-          description: result["description"],
-          endTime: result["deadline"]);
-      Hive.box("deadlines").add(deadline);
-
-      // setState(() {
-      //   deadlines.add(deadline);
-      // });
-    }
-  }
+  final Map<String, Color> colorList = {
+    "lastDay": Colors.red,
+    "lastWeek": Colors.orange,
+    "others": Colors.green,
+    "passed": Colors.grey
+  };
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Hive.openBox("deadlines"),
+        future: sortedDeadlines(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done &&
-              !snapshot.hasError) {
+          if (snapshot.hasData && !snapshot.hasError) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -76,7 +54,7 @@ class _DeadlineScreenState extends State<DeadlineScreen> {
                       style: TextStyle(color: Colors.black38)),
                 ),
                 Expanded(
-                  child: buildListView(),
+                  child: buildListView(snapshot.data),
                 )
               ],
             );
@@ -86,29 +64,97 @@ class _DeadlineScreenState extends State<DeadlineScreen> {
         });
   }
 
-  ListView buildListView() {
+  ListView buildListView(List<Deadline> deadlines) {
     final deadlinesBox = Hive.box("deadlines");
     return ListView.builder(
-      itemCount: deadlinesBox.length,
+      itemCount: deadlines.length,
       itemBuilder: (context, index) {
-        final deadline = deadlinesBox.getAt(index) as Deadline;
+        final deadline = deadlines[index];
         var t = deadline.endTime;
         return Dismissible(
           onDismissed: (DismissDirection direction) {
-            deadlinesBox.deleteAt(index);
+            deadlinesBox.delete(deadline.key);
           },
           background: Container(
             color: Colors.red,
           ),
           key: UniqueKey(),
-          child: ListTile(
-            title: Text(deadline.course.acronym),
-            subtitle: Text(deadline.description),
-            trailing: Text(
-                "${formattedNum(t.day)}/${formattedNum(t.month)} ${formattedNum(t.hour)}:${formattedNum(t.minute)}"),
+          child: Container(
+            margin: EdgeInsets.only(bottom: 2),
+            color: chooseTileColor(deadline.endTime),
+            child: ListTile(
+              title: Text(deadline.course.acronym),
+              subtitle: Text(deadline.description),
+              trailing: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "${formattedNum(t.day)} ${months[t.month]}",
+                      style: TextStyle(color: chooseTileColor(deadline.endTime), fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      "${formattedNum(t.hour)}:${formattedNum(t.minute)}",
+                      style: TextStyle(color: chooseTileColor(deadline.endTime), fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         );
       },
     );
+  }
+
+  chooseTileColor(DateTime deadline) {
+    final now = DateTime.now();
+    if(deadline.isBefore(now)){
+      return Colors.grey;
+    } else if(deadline.difference(now) < Duration(days: 1)){
+      return Colors.red;
+    } else if(deadline.difference(now) < Duration(days: 7)){
+      return Colors.orange;
+    } else {
+      return Colors.green;
+    }
+  }
+  Future<List<Deadline>> sortedDeadlines() async {
+    await Hive.openBox("deadlines");
+    final deadlinesBox = Hive.box("deadlines");
+    List<Deadline> deadlines = [];
+    for (int i = 0; i < deadlinesBox.length; i++) {
+      final deadline = deadlinesBox.getAt(i) as Deadline;
+      deadlines.add(deadline);
+    }
+
+    deadlines.sort((a, b) => a.endTime.compareTo(b.endTime));
+    return deadlines;
+  }
+
+  _navigateDeadlineEditScreen(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => DeadlineEditScreen()),
+    );
+
+    if (result != null) {
+      Deadline deadline = Deadline(
+          course: result["course"],
+          description: result["description"],
+          key: DateTime.now().millisecondsSinceEpoch % UPPER_LIMIT,
+          endTime: result["deadline"]);
+      Hive.box("deadlines").put(deadline.key, deadline);
+
+      // setState(() {
+      //   deadlines.add(deadline);
+      // });
+    }
   }
 }

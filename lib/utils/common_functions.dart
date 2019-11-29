@@ -16,6 +16,22 @@ String capitalizeFirstLetter(String str) {
 }
 
 int totalMin(int hour, int min) => hour * 60 + min;
+const int UPPER_LIMIT = 4294967295;
+const List<String> months = [
+  "",
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec"
+];
 
 List<GroupModel> days = [
   GroupModel(
