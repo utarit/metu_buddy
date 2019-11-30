@@ -47,7 +47,7 @@ class _AgendaScreenState extends State<AgendaScreen> {
     for (int hour = 0; hour < 9; hour++) {
       TableRow row = TableRow(
           decoration: BoxDecoration(
-              color: hour % 2 == 0 ? Colors.white : Colors.lightBlue[200]),
+              color: hour % 2 == 0 ? Colors.white : Colors.lightBlue[100]),
           children: [
             Container(
               padding: const EdgeInsets.all(4.0),
@@ -69,8 +69,13 @@ class _AgendaScreenState extends State<AgendaScreen> {
         if (f != null) {
           row.children.add(Container(
             alignment: Alignment.center,
-            padding: const EdgeInsets.all(4.0),
-            child: Text(f.acronym, style: TextStyle(fontSize: 12)),
+            padding: const EdgeInsets.all(5),
+            // margin: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 1),
+            decoration: BoxDecoration(
+              color: Color(f.color ?? Colors.transparent),
+              // borderRadius: BorderRadius.circular(5),
+            ),
+            child: Text(f.acronym, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
           ));
         } else {
           row.children.add(Container());
@@ -100,10 +105,6 @@ class _AgendaScreenState extends State<AgendaScreen> {
 
     if (result != null) {
       Hive.box("courses").add(result);
-      // setState(() {
-      //   courseList.add(result);
-      //   program.addCourse(result);
-      // });
     }
   }
 
@@ -118,8 +119,8 @@ class _AgendaScreenState extends State<AgendaScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
-                  padding:
-                      const EdgeInsets.only(left: 10, right: 10, top: 45.0, bottom: 8),
+                  padding: const EdgeInsets.only(
+                      left: 10, right: 10, top: 45.0, bottom: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[

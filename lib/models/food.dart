@@ -22,13 +22,13 @@ class Food {
       // If server returns an OK response, parse the JSON.
       dynamic body = json.decode(utf8.decode(response.bodyBytes)); 
       if(body == null){
-        return Future.error("Body is null");
+        return null;
       } else {
         return Food.fromJson(body);
       }
     } else {
       // If that response was not OK, throw an error.
-      return Future.error("Connection Error");
+      return null;
     }
   }
 }

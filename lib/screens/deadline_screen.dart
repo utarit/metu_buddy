@@ -72,15 +72,19 @@ class _DeadlineScreenState extends State<DeadlineScreen> {
         final deadline = deadlines[index];
         var t = deadline.endTime;
         return Dismissible(
+          direction: DismissDirection.endToStart,
           onDismissed: (DismissDirection direction) {
             deadlinesBox.delete(deadline.key);
           },
           background: Container(
-            color: Colors.red,
+            padding: EdgeInsets.only(right: 16),
+            alignment: Alignment.centerRight,
+            color: Colors.redAccent[400],
+            child: Icon(Icons.delete, color: Colors.white),
           ),
           key: UniqueKey(),
           child: Container(
-            margin: EdgeInsets.only(bottom: 2),
+            // margin: EdgeInsets.only(bottom: 2),
             color: chooseTileColor(deadline.endTime),
             child: ListTile(
               title: Text(deadline.course.acronym),
@@ -96,7 +100,7 @@ class _DeadlineScreenState extends State<DeadlineScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      "${formattedNum(t.day)} ${months[t.month]}",
+                      "${t.day} ${months[t.month]}",
                       style: TextStyle(color: chooseTileColor(deadline.endTime), fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     Text(

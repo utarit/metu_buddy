@@ -18,13 +18,14 @@ class CourseAdapter extends TypeAdapter<Course> {
       fullName: fields[1] as String,
       hours: (fields[2] as List)?.cast<CourseTime>(),
       syllabus: (fields[3] as List)?.cast<String>(),
+      color: fields[5] as int,
     )..key = fields[4] as int;
   }
 
   @override
   void write(BinaryWriter writer, Course obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.acronym)
       ..writeByte(1)
@@ -34,7 +35,9 @@ class CourseAdapter extends TypeAdapter<Course> {
       ..writeByte(3)
       ..write(obj.syllabus)
       ..writeByte(4)
-      ..write(obj.key);
+      ..write(obj.key)
+      ..writeByte(5)
+      ..write(obj.color);
   }
 }
 

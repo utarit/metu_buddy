@@ -10,12 +10,10 @@ class FoodWidget extends StatefulWidget {
 }
 
 class _FoodWidgetState extends State<FoodWidget> {
-
   @override
   void initState() {
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +42,8 @@ class _FoodWidgetState extends State<FoodWidget> {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: List.generate(widget.data.lunch.length, (index) {
-                  return Text(capitalizeFirstLetter(widget.data.lunch[index]["name"]),
+                  return Text(
+                      capitalizeFirstLetter(widget.data.lunch[index]["name"]),
                       style: TextStyle(color: Colors.white));
                 })),
           ),
@@ -69,23 +68,22 @@ class _FoodWidgetState extends State<FoodWidget> {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: List.generate(widget.data.dinner.length, (index) {
-                  return Text(capitalizeFirstLetter(widget.data.dinner[index]["name"]),
+                  return Text(
+                      capitalizeFirstLetter(widget.data.dinner[index]["name"]),
                       style: TextStyle(color: Colors.white));
                 })),
           ),
         ],
       );
-    } else if (widget.data == null) {
-      if (DateTime.now().weekday > 6) {
-        return Center(
-            child: Text("Haftasonu Yemekhane Kapalı :(",
-                style: TextStyle(color: Colors.white)));
-      }
+    } else if (DateTime.now().weekday > DateTime.friday) {
+      return Center(
+          child: Text("Haftasonu Yemekhane Kapalı :(",
+              style: TextStyle(color: Colors.white)));
     }
     return Center(
-          child: Text(
-        "Datayı alamadım yav :sad:",
-        style: TextStyle(color: Colors.white),
-      ));
+        child: Text(
+      "Datayı alamadım yav :sad:",
+      style: TextStyle(color: Colors.white),
+    ));
   }
 }

@@ -14,8 +14,10 @@ class Course {
   List<String> syllabus;
   @HiveField(4)
   int key;
+  @HiveField(5)
+  int color;
 
-  Course({this.acronym, this.fullName, this.hours, this.syllabus});
+  Course({this.acronym, this.fullName, this.hours, this.syllabus, this.color});
 }
 
 @HiveType()

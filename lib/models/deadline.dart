@@ -17,7 +17,6 @@ class Deadline {
   Deadline({this.course, this.endTime, this.key, this.description});
   @override
   String toString() {
-    // TODO: implement toString
     return "$endTime $description";
   }
 }

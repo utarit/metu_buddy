@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:metu_buddy/components/beta_widget.dart';
 import 'package:metu_buddy/components/food_widget.dart';
 import 'package:metu_buddy/components/medico_widget.dart';
 import 'package:metu_buddy/components/pool_widget.dart';
@@ -43,6 +44,11 @@ class _HomeScreenState extends State<HomeScreen> {
         "color": Colors.lightBlue[400],
         "icon": Icons.pool,
       },
+      {
+        "name": "For Beta Testers",
+        "color": Colors.purple,
+        "icon": Icons.whatshot,
+      },
     ];
     
   final List<TimeOfDay> sessions = [
@@ -59,12 +65,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    
     refreshData();
   }
 
   refreshData() async {
-    print("refresh");
+    // print("refresh");
     Food food = await Food.fetchFood();
     List<Doctor> medico = await _getMedicoData();
     setState(() {
@@ -73,12 +78,12 @@ class _HomeScreenState extends State<HomeScreen> {
       medicoData = medico;
       poolData = closestSession();
     });
-    print(poolData);
+    // print(poolData);
   }
 
   TimeOfDay closestSession() {
     var now = DateTime.now();
-    print("Hello");
+    // print("Hello");
     for (TimeOfDay session in sessions) {
       if (totalMin(session.hour, session.minute) >=
           totalMin(now.hour, now.minute)) {
@@ -120,6 +125,9 @@ class _HomeScreenState extends State<HomeScreen> {
       case 3:
         child = PoolWidget(data: poolData);
         break;
+        case 4:
+        child = BetaWidget();
+        break;
       default:
         child = null;
     }
@@ -159,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: StaggeredGridView.countBuilder(
             crossAxisCount: 4,
             padding: EdgeInsets.all(8.0),
-            itemCount: 4,
+            itemCount: tiles.length,
             shrinkWrap: true,
             mainAxisSpacing: 8.0,
             crossAxisSpacing: 8.0,

@@ -16,8 +16,9 @@ class DeadlineAdapter extends TypeAdapter<Deadline> {
     return Deadline(
       course: fields[0] as Course,
       endTime: fields[1] as DateTime,
+      key: fields[2] as int,
       description: fields[3] as String,
-    )..key = fields[2] as int;
+    );
   }
 
   @override

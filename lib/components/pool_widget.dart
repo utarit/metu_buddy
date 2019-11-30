@@ -1,23 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:metu_buddy/utils/common_functions.dart';
 
-class PoolWidget extends StatefulWidget {
+
+class PoolWidget extends StatelessWidget {
   final data;
   PoolWidget({this.data});
-  @override
-  _PoolWidgetState createState() => _PoolWidgetState();
-}
-
-class _PoolWidgetState extends State<PoolWidget> {
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.data == null) {
+    if (data == null) {
       return Text(
         "Havuz şu an genel kullanıma açık değil :|",
         style: TextStyle(color: Colors.white),
@@ -29,7 +20,7 @@ class _PoolWidgetState extends State<PoolWidget> {
       );
     }
     return Text(
-      "Sonraki Seans: ${formattedNum(widget.data.hour)}:${formattedNum(widget.data.minute)}",
+      "Sonraki Seans: ${formattedNum(data.hour)}:${formattedNum(data.minute)}",
       style: TextStyle(color: Colors.white),
     );
   }

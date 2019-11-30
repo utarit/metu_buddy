@@ -43,7 +43,6 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.maks.metu_buddy"
         minSdkVersion 16
         targetSdkVersion 28

@@ -15,7 +15,19 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
   List<CourseTime> lessonHours;
   int _tmpHour;
   int _tmpDay;
+  int _selectedColor = 0;
 
+  final courseColors = [
+    Colors.red.value,
+    Colors.purple.value,
+    Colors.pink.value,
+    Colors.blue.value,
+    Colors.green.value,
+    Colors.orange.value,
+    Colors.cyan.value,
+    Colors.indigo.value,
+    Colors.lime.value
+  ];
 
   _showBottomSheet(context) {
     showModalBottomSheet(
@@ -120,7 +132,40 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Edit Courses"),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        centerTitle: true,
+        leading: IconButton(
+          color: Colors.black,
+          icon: Icon(
+            Icons.arrow_back,
+            size: 30,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          "Add Course",
+          style: TextStyle(
+              fontFamily: "Galano",
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              color: Colors.black),
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.done,
+              color: Colors.black,
+              size: 30,
+            ),
+            onPressed: () {
+              _submitCourse(context);
+            },
+          ),
+          SizedBox(
+            width: 4,
+          )
+        ],
       ),
       body: Form(
           key: _formKey,
@@ -130,9 +175,6 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  // Text("Add Course",
-                  //     style:
-                  //         TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
                   TextFormField(
                     controller: courseAcronymController,
                     decoration:
@@ -145,6 +187,31 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
                       }
                       return null;
                     },
+                  ),
+                  SizedBox(
+                    height: 75,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: courseColors.length,
+                      itemBuilder: (context, index) {
+                        return FlatButton(
+                          padding: EdgeInsets.all(0),
+                          onPressed: () {
+                            setState(() {
+                              _selectedColor = index;
+                            });
+                          },
+                          child: Container(
+                            margin: EdgeInsets.all(8),
+                            width: 75,
+                            decoration: BoxDecoration(
+                              border: _selectedColor == index ? Border.all(color: Colors.black, width: 2): Border.all(width: 0),
+                              borderRadius: BorderRadius.circular(12),
+                              color: Color(courseColors[index]),),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                   TextFormField(
                     controller: courseNameController,
@@ -224,28 +291,25 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
                       );
                     }),
                   ),
-                  RaisedButton(
-                    child: Text("Add Course"),
-                    onPressed: () {
-                      if (_formKey.currentState.validate()) {
-                        Course course = Course(
-                            acronym: courseAcronymController.text.toUpperCase(),
-                            fullName: courseNameController.text,
-                            hours: lessonHours,
-                            syllabus: syllabusControllerList
-                                .map((f) => f.text.isEmpty ? "-" : f.text)
-                                .toList());
-                        print(course.syllabus);
-                        Navigator.pop(context, course);
-                      }
-                    },
-                  )
                 ],
               ),
             ),
           )),
     );
   }
+
+  void _submitCourse(BuildContext context) {
+    if (_formKey.currentState.validate()) {
+      Course course = Course(
+          acronym: courseAcronymController.text.toUpperCase(),
+          fullName: courseNameController.text,
+          hours: lessonHours,
+          color: courseColors[_selectedColor],
+          syllabus: syllabusControllerList
+              .map((f) => f.text.isEmpty ? "-" : f.text)
+              .toList());
+      print(course.syllabus);
+      Navigator.pop(context, course);
+    }
+  }
 }
-
-
