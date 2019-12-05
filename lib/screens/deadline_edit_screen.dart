@@ -111,8 +111,8 @@ class _DeadlineEditScreenState extends State<DeadlineEditScreen> {
                                   child: Container(
                                       padding: EdgeInsets.all(12.0),
                                       color: index == _selectedCourseIndex
-                                          ? Colors.purple
-                                          : Colors.purple[300],
+                                          ? Color(course.color)
+                                          : Color(course.color).withOpacity(0.5),
                                       child: Row(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
