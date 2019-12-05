@@ -17,7 +17,7 @@ class Course {
   @HiveField(5)
   int color;
 
-  Course({this.acronym, this.fullName, this.hours, this.syllabus, this.color});
+  Course({this.acronym, this.fullName, this.hours, this.syllabus, this.color, this.key});
 }
 
 @HiveType()

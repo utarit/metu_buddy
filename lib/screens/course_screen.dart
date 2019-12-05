@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:metu_buddy/models/course.dart';
 import 'package:metu_buddy/models/deadline.dart';
+import 'package:metu_buddy/screens/course_edit_screen.dart';
 import 'package:metu_buddy/utils/common_functions.dart';
 
 class CourseScreen extends StatefulWidget {
@@ -58,7 +59,7 @@ class _CourseScreenState extends State<CourseScreen>
               onPressed: () {
                 for (int i = 0; i < coursesBox.length; i++) {
                   final hiveCourse = coursesBox.getAt(i) as Course;
-                  if(widget.course.acronym == hiveCourse.acronym){
+                  if (widget.course.acronym == hiveCourse.acronym) {
                     coursesBox.deleteAt(i);
                   }
                 }
@@ -70,6 +71,16 @@ class _CourseScreenState extends State<CourseScreen>
         );
       },
     );
+  }
+
+  _editButton(){
+    Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => CourseEditScreen(
+                        course: widget.course,
+                      )),
+            );
   }
 
   @override
@@ -108,16 +119,28 @@ class _CourseScreenState extends State<CourseScreen>
                                   fontSize: 30,
                                   fontWeight: FontWeight.bold),
                             ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.delete,
-                                color: Colors.red,
-                                size: 30,
-                              ),
-                              onPressed: () {
-                                _showDialog();
-                              },
-                            )
+                            Row(
+                              children: <Widget>[
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.edit,
+                                    //color: Colors.red,
+                                    size: 30,
+                                  ),
+                                  onPressed: _editButton,
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                    size: 30,
+                                  ),
+                                  onPressed: () {
+                                    _showDialog();
+                                  },
+                                )
+                              ],
+                            ),
                           ],
                         ),
                       ),

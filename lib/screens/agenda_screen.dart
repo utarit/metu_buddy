@@ -75,7 +75,8 @@ class _AgendaScreenState extends State<AgendaScreen> {
               color: Color(f.color ?? Colors.transparent),
               // borderRadius: BorderRadius.circular(5),
             ),
-            child: Text(f.acronym, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+            child: Text(f.acronym,
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
           ));
         } else {
           row.children.add(Container());
@@ -94,18 +95,17 @@ class _AgendaScreenState extends State<AgendaScreen> {
     //generateTable();
   }
 
-  _navigateEditScreen(BuildContext context) async {
+  _navigateEditScreen(BuildContext context) {
     // Navigator.push returns a Future that completes after calling
     // Navigator.pop on the Selection Screen.
-    final result = await Navigator.push(
+    Navigator.push(
       context,
-      // Create the SelectionScreen in the next step.
       MaterialPageRoute(builder: (context) => CourseEditScreen()),
     );
 
-    if (result != null) {
-      Hive.box("courses").add(result);
-    }
+    // if (result != null) {
+    //   Hive.box("courses").put(result.key, result);
+    // }
   }
 
   @override
@@ -183,16 +183,36 @@ class _AgendaScreenState extends State<AgendaScreen> {
                       )),
             );
           },
-          title: RichText(
-            text: TextSpan(style: TextStyle(color: Colors.black), children: [
-              TextSpan(
-                  text: course.acronym,
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              TextSpan(text: " - "),
-              TextSpan(text: course.fullName)
-            ]),
+          title: Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: Color(course.color),
+                    borderRadius: BorderRadius.circular(20)
+                  ),
+                  child: Text(course.acronym,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15
+                      )),
+                ),
+                SizedBox(width: 8,),
+                Text(course.fullName)
+              ],
+            ),
           ),
-          subtitle: Text("Week ${ind + 1}: ${course.syllabus[ind]}"),
+          subtitle: Padding(
+            padding: const EdgeInsets.only(left: 4.0),
+            child: Text("Week ${ind + 1}: ${course.syllabus[ind]}"),
+          ),
+          trailing: Icon(
+            Icons.info,
+            color: Color(course.color),
+          ),
         );
       },
     );

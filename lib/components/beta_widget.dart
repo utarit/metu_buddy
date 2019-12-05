@@ -7,7 +7,7 @@ class BetaWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          "Greetings\n",
+          "v.1.0.6\n",
           style: TextStyle(color: Colors.white),
         ),
         Text(
@@ -19,7 +19,7 @@ class BetaWidget extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
         Text(
-          "Haftasonu yemekhaneden gelen arsız bir null anasayfayı üzüyordu. O null'ı elimine ettim. Şu an ana sayfa düzgün çalışıyor.\n",
+          "Şimdi düşününce betadan çıkana kadar bol bol datayı sıfırlayabilirsiniz hazırlıklı olun :d",
           style: TextStyle(color: Colors.white),
         ),
       ],

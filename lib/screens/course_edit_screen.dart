@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:metu_buddy/models/course.dart';
 import 'package:metu_buddy/utils/common_functions.dart';
 
 class CourseEditScreen extends StatefulWidget {
+  final Course course;
+  CourseEditScreen({this.course});
+
   @override
   _CourseEditScreenState createState() => _CourseEditScreenState();
 }
@@ -123,8 +127,28 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
     super.initState();
     lessonHours = List<CourseTime>();
     syllabusControllerList = List<TextEditingController>();
-    for (int i = 0; i < 14; i++) {
-      syllabusControllerList.add(TextEditingController());
+
+    if (widget.course != null) {
+      for (int i = 0; i < widget.course.hours.length; i++) {
+        lessonHours.add(widget.course.hours[i]);
+      }
+      for (int i = 0; i < 14; i++) {
+        syllabusControllerList
+            .add(TextEditingController(text: widget.course?.syllabus[i] ?? ""));
+      }
+      for (int i = 0; i < courseColors.length; i++) {
+        if (widget.course.color == courseColors[i]) {
+          setState(() {
+            _selectedColor = i;
+          });
+        }
+      }
+      courseAcronymController.text = widget.course.acronym;
+      courseNameController.text = widget.course.fullName;
+    } else {
+      for (int i = 0; i < 14; i++) {
+        syllabusControllerList.add(TextEditingController());
+      }
     }
   }
 
@@ -144,12 +168,13 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          "Add Course",
+          "${widget.course == null ? "Add" : "Edit"} Course",
           style: TextStyle(
-              fontFamily: "Galano",
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-              color: Colors.black),
+            fontFamily: "Galano",
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
         ),
         actions: <Widget>[
           IconButton(
@@ -159,7 +184,7 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
               size: 30,
             ),
             onPressed: () {
-              _submitCourse(context);
+              _submitCourse();
             },
           ),
           SizedBox(
@@ -175,19 +200,29 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  TextFormField(
-                    controller: courseAcronymController,
-                    decoration:
-                        InputDecoration(labelText: 'Enter Course Acronym'),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please enter some text';
-                      } else if (value.length > 7) {
-                        return 'Acronym cannot be longer that 7 character';
-                      }
-                      return null;
-                    },
-                  ),
+                  widget.course == null
+                      ? TextFormField(
+                          controller: courseAcronymController,
+                          decoration: InputDecoration(
+                              labelText: 'Enter Course Acronym'),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please enter some text';
+                            } else if (value.length > 7) {
+                              return 'Acronym cannot be longer that 7 character';
+                            }
+                            return null;
+                          },
+                        )
+                      : Text(
+                          widget.course.acronym,
+                          style: TextStyle(
+                            fontFamily: "Galano",
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
                   SizedBox(
                     height: 75,
                     child: ListView.builder(
@@ -205,9 +240,12 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
                             margin: EdgeInsets.all(8),
                             width: 75,
                             decoration: BoxDecoration(
-                              border: _selectedColor == index ? Border.all(color: Colors.black, width: 2): Border.all(width: 0),
+                              border: _selectedColor == index
+                                  ? Border.all(color: Colors.black, width: 2)
+                                  : Border.all(width: 0),
                               borderRadius: BorderRadius.circular(12),
-                              color: Color(courseColors[index]),),
+                              color: Color(courseColors[index]),
+                            ),
                           ),
                         );
                       },
@@ -298,18 +336,25 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
     );
   }
 
-  void _submitCourse(BuildContext context) {
+  void _submitCourse() async {
     if (_formKey.currentState.validate()) {
-      Course course = Course(
+      Course result = Course(
           acronym: courseAcronymController.text.toUpperCase(),
           fullName: courseNameController.text,
           hours: lessonHours,
+          key: widget.course?.key ??
+              DateTime.now().millisecondsSinceEpoch % UPPER_LIMIT,
           color: courseColors[_selectedColor],
           syllabus: syllabusControllerList
               .map((f) => f.text.isEmpty ? "-" : f.text)
               .toList());
-      print(course.syllabus);
-      Navigator.pop(context, course);
+
+      await Hive.openBox("courses");
+      Hive.box("courses").put(result.key, result);
+      Navigator.pop(context);
+      if (widget.course != null) {
+        Navigator.pop(context);
+      }
     }
   }
 }
