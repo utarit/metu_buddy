@@ -20,6 +20,7 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
   int _tmpHour;
   int _tmpDay;
   int _selectedColor = 0;
+  bool loaded = false;
 
   final courseColors = [
     Colors.red.value,
@@ -150,11 +151,22 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
         syllabusControllerList.add(TextEditingController());
       }
     }
+    _openHiveBox();
+  }
+
+   _openHiveBox() async {
+    await Hive.openBox("courses");
+    setState(() {
+      loaded = true;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    if(!loaded) {
+      return Scaffold();
+    } else {
+      return Scaffold(
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -210,6 +222,8 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
                               return 'Please enter some text';
                             } else if (value.length > 7) {
                               return 'Acronym cannot be longer that 7 character';
+                            } else if(Hive.box("courses").containsKey(value.toUpperCase())){
+                              return "This course is already in your program";
                             }
                             return null;
                           },
@@ -334,6 +348,7 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
             ),
           )),
     );
+    }
   }
 
   void _submitCourse() async {
@@ -342,15 +357,14 @@ class _CourseEditScreenState extends State<CourseEditScreen> {
           acronym: courseAcronymController.text.toUpperCase(),
           fullName: courseNameController.text,
           hours: lessonHours,
-          key: widget.course?.key ??
-              DateTime.now().millisecondsSinceEpoch % UPPER_LIMIT,
+          //key: widget.course?.key ?? DateTime.now().millisecondsSinceEpoch % UPPER_LIMIT,
           color: courseColors[_selectedColor],
           syllabus: syllabusControllerList
               .map((f) => f.text.isEmpty ? "-" : f.text)
               .toList());
 
       await Hive.openBox("courses");
-      Hive.box("courses").put(result.key, result);
+      Hive.box("courses").put(result.acronym, result);
       Navigator.pop(context);
       if (widget.course != null) {
         Navigator.pop(context);
